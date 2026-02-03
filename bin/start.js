@@ -3,16 +3,17 @@
 import { spawn } from 'child_process';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { existsSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const projectRoot = process.cwd();
+const packageRoot = join(__dirname, '..');
+const userCwd = process.cwd();
 
 console.log('\n🚀 Starting Azure AD JWT Debugger Web...\n');
 
-// Check if .env.local exists
-const envLocalPath = join(projectRoot, '.env.local');
+// Check if .env.local exists in user's current directory
+const envLocalPath = join(userCwd, '.env.local');
 if (!existsSync(envLocalPath)) {
   console.error('⚠️  Warning: .env.local file not found!');
   console.error('');
@@ -27,13 +28,13 @@ if (!existsSync(envLocalPath)) {
   process.exit(1);
 }
 
-// Check if node_modules exists
-const nodeModulesPath = join(projectRoot, 'node_modules');
+// Check if node_modules exists in the package directory
+const nodeModulesPath = join(packageRoot, 'node_modules');
 if (!existsSync(nodeModulesPath)) {
   console.log('📦 Installing dependencies...\n');
 
   const install = spawn('npm', ['install'], {
-    cwd: projectRoot,
+    cwd: packageRoot,
     stdio: 'inherit',
     shell: true
   });
@@ -64,10 +65,29 @@ function startDevServer() {
   console.log('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
   console.log('');
 
+  // Load .env.local and merge into environment
+  const envVars = { ...process.env };
+  try {
+    const envContent = readFileSync(envLocalPath, 'utf-8');
+    envContent.split('\n').forEach(line => {
+      const trimmed = line.trim();
+      if (trimmed && !trimmed.startsWith('#')) {
+        const [key, ...valueParts] = trimmed.split('=');
+        if (key) {
+          envVars[key.trim()] = valueParts.join('=').trim();
+        }
+      }
+    });
+  } catch (err) {
+    console.error('❌ Error reading .env.local:', err.message);
+    process.exit(1);
+  }
+
   const devServer = spawn('npm', ['run', 'dev'], {
-    cwd: projectRoot,
+    cwd: packageRoot,
     stdio: 'inherit',
-    shell: true
+    shell: true,
+    env: envVars
   });
 
   devServer.on('close', (code) => {
