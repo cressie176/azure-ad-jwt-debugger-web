@@ -7,7 +7,7 @@ import { existsSync } from 'fs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-const projectRoot = join(__dirname, '..');
+const projectRoot = process.cwd();
 
 console.log('\n🚀 Starting Azure AD JWT Debugger Web...\n');
 
