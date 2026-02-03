@@ -7,7 +7,7 @@ A simple web application for testing Azure AD authentication with MSAL. This app
 You can run this application directly without cloning the repository:
 
 ```bash
-npx github:cressie176/azure-ad-jwt-debugger
+npx github:cressie176/azure-ad-jwt-debugger-web
 ```
 
 **Note:** You still need to create a `.env.local` file with your Azure AD configuration before running (see Configuration section below).
