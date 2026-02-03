@@ -2,6 +2,16 @@
 
 A simple web application for testing Azure AD authentication with MSAL. This app allows you to sign in with Azure AD and test authenticated requests to the backend service.
 
+## Quick Start with npx
+
+You can run this application directly without cloning the repository:
+
+```bash
+npx azure-ad-jwt-debugger-web
+```
+
+**Note:** You still need to create a `.env.local` file with your Azure AD configuration before running (see Configuration section below).
+
 ## Prerequisites
 
 - Node.js 18 or higher
@@ -10,30 +20,20 @@ A simple web application for testing Azure AD authentication with MSAL. This app
 
 ## Setup
 
-### 1. Install Dependencies
+### Configuration (Required for Both Methods)
+
+Whether using npx or local development, you must configure your environment variables.
+
+Create a `.env.local` file in the project directory:
 
 ```bash
-npm install
-```
-
-### 2. Configure Environment Variables
-
-Create a `.env.local` file based on `.env.example`:
-
-```bash
-cp .env.example .env.local
-```
-
-Edit `.env.local` with your Azure AD credentials:
-
-```
+# .env.local
 VITE_AZURE_TENANT_ID=your-tenant-id
 VITE_AZURE_CLIENT_ID=your-client-id
-VITE_AZURE_SCOPE=api://your-app-id/your-scope/access
-VITE_API_URL=http://localhost:3000/api/debug/token
+VITE_API_URL=http://localhost:3002/api/debug/token
 ```
 
-### 3. Configure Azure AD Application
+### Azure AD Application Configuration
 
 In the Azure Portal, configure your app registration:
 
@@ -49,7 +49,7 @@ In the Azure Portal, configure your app registration:
    - Add a scope called `access_as_user`
    - Note the Application ID URI (format: `api://{client-id}`)
 
-### 4. Start the Backend Service
+### Start the Backend Service
 
 The backend service must be running for API calls to work:
 
@@ -59,9 +59,29 @@ npm install
 npm start
 ```
 
-### 5. Start the Web Application
+## Running the Application
+
+### Option 1: Using npx (Recommended)
 
 ```bash
+npx azure-ad-jwt-debugger-web
+```
+
+The script will:
+- Check for `.env.local` configuration
+- Install dependencies if needed
+- Start the Vite dev server
+- Open the application at `http://localhost:5173`
+
+### Option 2: Local Development
+
+If you've cloned the repository:
+
+```bash
+# Install dependencies
+npm install
+
+# Start development server
 npm run dev
 ```
 

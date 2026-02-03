@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Simple web app for testing Azure AD authentication with MSAL",
   "type": "module",
+  "bin": {
+    "azure-ad-jwt-debugger-web": "./bin/start.js"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
